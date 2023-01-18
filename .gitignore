@@ -29,3 +29,4 @@ Thumbs.db
 *.sublime-workspace
 package-lock.json
 pnpm-lock.yaml
+.eslintcache
