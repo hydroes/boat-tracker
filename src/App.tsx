@@ -1,62 +1,74 @@
-import './App.css'
+// code from:
+// https://github.com/visgl/deck.gl/blob/8.8-release/examples/get-started/react/mapbox/package.json
 
-import {StaticMap, MapContext, NavigationControl} from 'react-map-gl';
-import DeckGL, {GeoJsonLayer, ArcLayer} from 'deck.gl/typed';
+import './App.css';
+import { StaticMap, MapContext, NavigationControl } from 'react-map-gl';
+import DeckGL, { GeoJsonLayer } from 'deck.gl/typed';
 
-
-// source: Natural Earth http://www.naturalearthdata.com/ via geojson.xyz
-const AIR_PORTS =
-  'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
+const LOCATION_DATA = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      properties: {
+        scalerank: 2,
+        type: 'major',
+        name: 'London Heathrow',
+        abbrev: 'LHR',
+        location: 'parking',
+        gps_code: 'EGLL',
+        iata_code: 'LHR',
+        wikipedia: 'http://en.wikipedia.org/wiki/London_Heathrow_Airport',
+        natlscale: 150,
+        featureclass: 'Airport',
+      },
+      geometry: { type: 'Point', coordinates: [-0.453156652063309, 51.47099587999384] },
+    },
+  ],
+};
 
 const INITIAL_VIEW_STATE = {
   latitude: 51.47,
   longitude: 0.45,
-  zoom: 4,
+  zoom: 8,
   bearing: 0,
-  pitch: 30
+  pitch: 0,
 };
 
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json';
 const NAV_CONTROL_STYLE = {
-    position: 'absolute',
-    top: 10,
-    left: 10
+  position: 'absolute',
+  top: 10,
+  left: 10,
 };
 
+interface Airport {
+  object: { properties: { name: any; abbrev: any } };
+}
 
 function App() {
-  const onClick = info => {
+  const onClick = (info: Airport) => {
     if (info.object) {
       // eslint-disable-next-line
-      alert(`${info.object.properties.name} (${info.object.properties.abbrev})`);
+      // alert(`${info.object.properties.name} (${info.object.properties.abbrev})`);
+      console.log('-'.repeat(20), 'info', info);
     }
   };
 
   const layers = [
     new GeoJsonLayer({
       id: 'airports',
-      data: AIR_PORTS,
+      data: LOCATION_DATA,
       // Styles
       filled: true,
       pointRadiusMinPixels: 2,
       pointRadiusScale: 2000,
-      getPointRadius: (f) => 11 - f.properties.scalerank,
+      getPointRadius: (f) => 1,
       getFillColor: [200, 0, 80, 180],
       // Interactive props
       pickable: true,
       autoHighlight: true,
       onClick,
-    }),
-    new ArcLayer({
-      id: 'arcs',
-      data: AIR_PORTS,
-      dataTransform: (d) => d.features.filter((f) => f.properties.scalerank < 4),
-      // Styles
-      getSourcePosition: (f) => [-0.4531566, 51.4709959], // London
-      getTargetPosition: (f) => f.geometry.coordinates,
-      getSourceColor: [0, 128, 200],
-      getTargetColor: [200, 0, 80],
-      getWidth: 1,
     }),
   ];
 
@@ -73,4 +85,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
