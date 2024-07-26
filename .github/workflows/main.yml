@@ -22,9 +22,7 @@ jobs:
           aws-region: eu-west-2
       - name: Install dependencies
         working-directory: ./client
-        run: |
-          echo $pwd
-          bun install
+        run: bun install
       - name: Build application
         working-directory: ./client
         run: bun run build
