@@ -21,10 +21,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - name: Install dependencies
-        run: bun install
+        run: |
+          cd client
+          bun install
       - name: Build application
-        run: bun run build
+        run: |
+          cd client 
+          bun run build
       - name: Deploy to S3
-        run: aws s3 sync ./dist/ s3://${{ secrets.BUCKET_ID }}
+        run: aws s3 sync .client/dist/ s3://${{ secrets.BUCKET_ID }}
       - name: Create CloudFront Invalidation
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.DISTRIBUTION_ID }} --paths "/*"
