@@ -23,6 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd client
+          echo $pwd
           bun install
       - name: Build application
         run: |
